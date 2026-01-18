@@ -2,7 +2,6 @@
 /build
 
 # DONT PUSH ANY .zip FILES TO GITHUB TO KEEP CLEAN REPO
-/templates/*.zip
 /templates/*.h
 
 # DONT PUSH CMAKE CACHE

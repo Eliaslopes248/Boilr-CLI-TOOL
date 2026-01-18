@@ -1,0 +1,106 @@
+================================================================================
+BOILR-CLI-TOOL - HIGH LEVEL USAGE DOCUMENTATION
+================================================================================
+
+OVERVIEW:
+---------
+Boilr-CLI-TOOL is a C++ command-line utility that scaffolds minimal full-stack 
+projects from pre-built templates. The tool reads user configuration from CLI 
+arguments, validates the configuration, and extracts project template files 
+(embedded as byte arrays in .h header files) to the specified destination.
+
+HOW IT WORKS:
+-------------
+
+1. CLI ARGUMENT PARSING
+   The program reads command-line arguments and parses them into a USER_CONFIG 
+   object. Supported arguments include:
+   
+   - -ID / -I <number>          : Select template by ID
+   - -TN / -TNAME <name>        : Select template by name
+   - -N / -NAME <name>          : Set project name (default: "boilr-template")
+   - -D / -DESTINATION <path>   : Set destination directory (default: ".")
+   - -pr / -print-registry      : Print all available templates
+   - -h / -help                 : Display help message
+
+2. CONFIG OBJECT CREATION
+   After parsing arguments, a USER_CONFIG struct is populated with:
+   - Template ID or template name (at least one required)
+   - Project name
+   - Destination path
+
+3. CONFIG VERIFICATION
+   The program validates the configuration:
+   - Ensures either a template ID or template name is provided
+   - Verifies the template exists in the build registry
+   - Validates the destination path (if specified)
+
+4. TEMPLATE EXTRACTION (To be implemented)
+   Once verified, the program will:
+   - Locate the selected template's byte data from the registry
+   - Extract the embedded project files (stored as byte arrays in .h files)
+   - Write the extracted files to the destination directory
+   - Create the project structure ready for use
+
+AVAILABLE TEMPLATES:
+--------------------
+The following project templates are available (or will be available):
+
+  - node-server              : Minimal Node.js REST API server
+  - spring-boot-server       : Java Spring Boot backend application
+  - react-app-js            : React application with JavaScript
+  - react-app-ts            : React application with TypeScript
+  - react-app-docker        : React app with Docker configuration
+  - react-app-nodejs-docker : Full-stack React + Node.js with Docker
+  - nodejs-aws-sdk-clients  : Node.js project with AWS SDK client abstractions
+                                (S3, RDS, etc.)
+
+TEMPLATE SYSTEM:
+----------------
+Templates are pre-built projects that are:
+1. Packaged as ZIP archives
+2. Converted to C++ header files using: xxd -i template.zip > template.h
+3. Embedded as byte arrays directly in the compiled binary
+4. Registered in the build registry at program startup
+5. Extracted to disk when selected by the user
+
+This approach allows the entire tool and all templates to be distributed as a 
+single executable binary.
+
+INSTALLATION:
+-------------
+The executable is located at: ./build/br
+
+After building the project, run the tool using:
+  ./build/br [options]
+
+Alternatively, download a pre-built executable using curl:
+  curl -L https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/latest/download/br -o br
+  chmod +x br
+
+For convenience, add the executable to your system PATH to use it from any 
+directory.
+
+EXAMPLE USAGE:
+--------------
+  # List available templates
+  ./br -pr
+
+  # Create a React TypeScript app named "my-app" in current directory
+  ./br -TN react-app-ts -N my-app
+
+  # Create a Node.js server with AWS SDK clients in specific directory
+  ./br -ID 5 -N my-backend -D ~/projects/
+
+  # Create a full-stack Docker project
+  ./br -TN react-app-nodejs-docker -N fullstack-app -D ./projects/
+
+USE CASES:
+----------
+- Rapid prototyping and MVPs
+- Hackathon project scaffolding
+- Quick demo setups
+- AWS-integrated project bootstrapping
+- Learning new frameworks with minimal setup
+
+================================================================================

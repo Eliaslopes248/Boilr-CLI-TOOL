@@ -28,7 +28,7 @@ int handle_commands(int argc, char* argv[])
     for(int i=0;i<argc;i++)
     {
         // handle help command
-        if (strcmp(argv[i], "-help") == 0 || strcmp(argv[i], "-h") == 0){
+        if (strcmp(argv[i], "-help") == 0 || strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0){
             br.help();
             exit(0);   
         }

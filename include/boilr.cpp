@@ -57,24 +57,52 @@ void BR::help()
     and returns it for use
 */
 string BR::help_message(){
-    return R"(Boilr-CLI-TOOL
-
-BRIEF:
-    Boilr-CLI-TOOL is a lightweight CLI tool for quickly scaffolding
-    and building minimal full-stack projects. Perfect for demos, MVPs,
-    hackathons, or rapid prototyping.
+    return R"(boilr - A lightweight CLI tool for quickly scaffolding and building minimal full-stack projects
 
 USAGE:
-    ./br [options]
-    Specify a build type, project name, and destination directory.
-    (Argument options to be implemented)
+    boilr [OPTIONS]
 
-ADVICE:
-    For convenience, add this tool to your system PATH so you can
-    run it from anywhere without specifying the full path.
+DESCRIPTION:
+    Boilr is a CLI tool for quickly scaffolding and building minimal full-stack
+    projects. Perfect for demos, MVPs, hackathons, or rapid prototyping.
+    
+    You must specify either a template ID (-I) or template name (-TN) to select
+    a build template. Optionally specify a project name and destination directory.
 
-AUTHOR: Elias A. Lopes
-DATE:   01/16/2026
+OPTIONS:
+    -h, --help             Show this help message and exit
+    
+    -pr, -print-registry   Print all available build templates in the registry
+    
+    -I, -ID <id>           Specify the template ID to use
+    
+    -TN, -TNAME <name>     Specify the template name to use
+    
+    -N, -NAME <name>       Set the project name (default: boilr-template)
+    
+    -D, -DESTINATION <path> Set the destination directory for the project
+                            (default: current directory)
+
+EXAMPLES:
+    boilr -h
+        Show this help message
+    
+    boilr -pr
+        List all available templates
+    
+    boilr -I 1 -N my-project -D ./projects
+        Create a project using template ID 1 with name "my-project" in ./projects
+    
+    boilr -TN my-template -N my-app -D ~/workspace
+        Create a project using template named "my-template" with name "my-app"
+        in ~/workspace directory
+
+NOTES:
+    For convenience, add this tool to your system PATH so you can run it from
+    anywhere without specifying the full path.
+
+AUTHOR:
+    Elias A. Lopes
 )";
 }
 

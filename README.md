@@ -1,4 +1,7 @@
 # Boilr-CLI-TOOL
+INSTALL: "curl -L -o br https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/download/v1.0.0-beta/br && chmod +x br"
+
+
 CLI tool to quickly scaffold, package, and deploy minimal full-stack projects with Docker, plus ready-to-use AWS SDK clients (S3, RDS, etc.) from a single C++ binary.
 
 ProjectName (replace with your tool name)

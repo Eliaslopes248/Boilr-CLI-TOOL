@@ -1,8 +1,13 @@
 # DONT COPY YOUR BUILD BECAUSE THIS DIRECTORY IS DEVICE SPECIFIC
-build-*
+# Ignore all build-* directories (but keep zip files)
+build-*/
 
 # DONT PUSH ANY .zip FILES TO GITHUB TO KEEP CLEAN REPO
 /templates/*.h
 
 # DONT PUSH CMAKE CACHE
 .cache
+
+# DONT PUSH RELEASE BUILD DIRECTORIES, ONLY THE ZIP FILES
+# Explicitly allow zip files (build-*.zip) to override directory ignore
+!*.zip

@@ -9,19 +9,47 @@
 #include <memory>
 #include <set>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #define BR boilr
 namespace fs =  std::filesystem;
 
+// Cross-platform color support
+namespace {
+    void init_terminal_colors() {
+        #ifdef _WIN32
+            // Enable ANSI escape sequences in Windows 10+
+            HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (hOut != INVALID_HANDLE_VALUE) {
+                DWORD dwMode = 0;
+                if (GetConsoleMode(hOut, &dwMode)) {
+                    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+                    SetConsoleMode(hOut, dwMode);
+                }
+            }
+        #endif
+    }
+    
+    const char* COLOR_GREEN = "\033[32m";
+    const char* COLOR_RED = "\033[91m";
+    const char* COLOR_RESET = "\033[0m";
+}
+
 
 BR::boilr()
 {
+    // Initialize terminal colors for cross-platform support
+    init_terminal_colors();
     // Builds are automatically registered via registerBuilds.h include above
     this->registry = build_registery::Instance();
     // user_config is automatically initialized with default values from USER_CONFIG struct
 }
 BR::boilr(USER_CONFIG& config)
 {
+    // Initialize terminal colors for cross-platform support
+    init_terminal_colors();
     // Builds are automatically registered via registerBuilds.h include above
     this->registry      = build_registery::Instance();
     this->user_config   = config;
@@ -167,11 +195,11 @@ bool BR::verify_config(){
     }
     if (!chosen_build)
     { 
-        cout << "[PROC]Verifying Configuration... " << "\033[91mFAIL\033[0m\n";
+        cout << "[PROC]Verifying Configuration... " << COLOR_RED << "FAIL" << COLOR_RESET << "\n";
         return false; 
     }
-    cout << "[PROC]Verifying Configuration... " << "\033[32mOK\033[0m\n";
-    cout << "[PROC]Attempting Insertion... " << "\033[32mOK\033[0m\n";
+    cout << "[PROC]Verifying Configuration... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
+    cout << "[PROC]Attempting Insertion... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
     
     // attempt to insert build
     return insert(chosen_build);
@@ -198,10 +226,10 @@ int BR::verify_template_name(map<unsigned int, build>& builds, const string name
 bool BR::verify_destination(const string name)
 {
     if (fs::exists(name)){
-        cout << "[PROC]Verifying Destination... " << "\033[32mOK\033[0m\n";
+        cout << "[PROC]Verifying Destination... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
         return true;
     }
-    cout << "[PROC]Verifying Destination... " << "\033[91mFAIL\033[0m\n";
+    cout << "[PROC]Verifying Destination... " << COLOR_RED << "FAIL" << COLOR_RESET << "\n";
     return false;
 }
 
@@ -237,10 +265,10 @@ bool BR::insert(build* b)
     
     if (!this->unzip(zip_path, dest_dir))
     {
-        cout << "[PROC]Extracting Template... " << "\033[91mFAIL\033[0m\n";
+        cout << "[PROC]Extracting Template... " << COLOR_RED << "FAIL" << COLOR_RESET << "\n";
         return false;
     }
-    cout << "[PROC]Extracting Template... " << "\033[32mOK\033[0m\n";
+    cout << "[PROC]Extracting Template... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
     
     // Find the newly extracted folder and rename it to project name
     fs::path extracted_folder;
@@ -266,10 +294,10 @@ bool BR::insert(build* b)
     
     if (!clean_up(zip_path))
     {
-        cout << "[PROC]Removing ZIP... " << "\033[91mFAIL\033[0m\n";
+        cout << "[PROC]Removing ZIP... " << COLOR_RED << "FAIL" << COLOR_RESET << "\n";
         return false;
     }
-    cout << "[PROC]Removing ZIP... " << "\033[32mOK\033[0m\n";
+    cout << "[PROC]Removing ZIP... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
     return true;
 }
 
@@ -290,14 +318,14 @@ bool BR::write_zip(build* b)
     std::ofstream out(zip_path, std::ios::binary);
     if (!out)
     {
-        cout << "[PROC]Writing Zip Template... " << "\033[91mFAIL\033[0m\n";
+        cout << "[PROC]Writing Zip Template... " << COLOR_RED << "FAIL" << COLOR_RESET << "\n";
         return false;
     } 
 
     // Write bytes to ZIP file
     out.write(reinterpret_cast<const char*>(b->header_data), b->header_size);
     out.close();
-    cout << "[PROC]Writing Zip Template... " << "\033[32mOK\033[0m\n";
+    cout << "[PROC]Writing Zip Template... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
     return true;
 }
 
@@ -306,9 +334,15 @@ bool BR::unzip(const fs::path& zip_file, const fs::path& dest_dir)
     fs::create_directories(dest_dir);
 
     #ifdef _WIN32
+        // Windows 10+ has tar built-in, use it for cross-compatibility
+        // PowerShell Expand-Archive is also available but tar works better
         std::string cmd = "tar -xf \"" + zip_file.string() +
                         "\" -C \"" + dest_dir.string() + "\"";
+    #elif defined(__APPLE__) || defined(__linux__)
+        std::string cmd = "unzip -o \"" + zip_file.string() +
+                        "\" -d \"" + dest_dir.string() + "\"";
     #else
+        // Fallback: try unzip command
         std::string cmd = "unzip -o \"" + zip_file.string() +
                         "\" -d \"" + dest_dir.string() + "\"";
     #endif
@@ -319,13 +353,22 @@ bool BR::unzip(const fs::path& zip_file, const fs::path& dest_dir)
 
 bool BR::clean_up(const fs::path& zip_file)
 {
-    #ifdef _WIN32
-        std::string cmd = "del /f " + zip_file.string();
-    #else
-        std::string cmd = "rm -rf " + zip_file.string();
-    #endif
+    // Use filesystem library for cross-platform file deletion
+    try {
+        if (fs::exists(zip_file)) {
+            fs::remove(zip_file);
+            return true;
+        }
+    } catch (const fs::filesystem_error& e) {
+        // Fallback to system command if filesystem library fails
+        #ifdef _WIN32
+            std::string cmd = "del /f /q \"" + zip_file.string() + "\"";
+        #else
+            std::string cmd = "rm -f \"" + zip_file.string() + "\"";
+        #endif
         if (std::system(cmd.c_str()) != 0)
             return false;
+    }
     return true;
 }
 

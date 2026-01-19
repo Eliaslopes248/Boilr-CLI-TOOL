@@ -2,6 +2,10 @@
 #include <cstring>
 #include "include/boilr.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 using namespace std;
 
 void config_to_string(USER_CONFIG config);
@@ -78,6 +82,18 @@ int handle_commands(int argc, char* argv[])
             exit(-1);
         }
     }
+    // Initialize terminal colors for Windows
+    #ifdef _WIN32
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut != INVALID_HANDLE_VALUE) {
+        DWORD dwMode = 0;
+        if (GetConsoleMode(hOut, &dwMode)) {
+            dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(hOut, dwMode);
+        }
+    }
+    #endif
+    
     cout << "[PROC]Parsing Arguments... " << "\033[32mOK\033[0m\n";
     /**
         INJECTS:

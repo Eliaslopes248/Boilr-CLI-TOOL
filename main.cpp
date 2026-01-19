@@ -1,10 +1,22 @@
 #include <cstdlib>
 #include <cstring>
-#include "include/boilr.h"
 
+// Include Windows headers FIRST with proper defines to avoid byte conflict with std::byte
 #ifdef _WIN32
-#include <windows.h>
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #include <windows.h>
+    // Undefine byte to avoid conflict with std::byte from <cstddef>
+    #ifdef byte
+        #undef byte
+    #endif
 #endif
+
+#include "include/boilr.h"
 
 using namespace std;
 

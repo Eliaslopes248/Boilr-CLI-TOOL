@@ -1,3 +1,18 @@
+// Include Windows headers FIRST with proper defines to avoid byte conflict
+#ifdef _WIN32
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #include <windows.h>
+    // Undefine byte to avoid conflict with std::byte from <cstddef>
+    #ifdef byte
+        #undef byte
+    #endif
+#endif
+
 #include "boilr.h"
 #include "registerBuilds.h"  // This registers all builds automatically
 #include "buildRegistry.h"
@@ -8,10 +23,6 @@
 #include <filesystem>
 #include <memory>
 #include <set>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 #define BR boilr
 namespace fs =  std::filesystem;

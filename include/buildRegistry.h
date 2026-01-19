@@ -1,3 +1,5 @@
+#pragma once
+
 /**
 BREIF:
     This file will be used to define
@@ -6,13 +8,28 @@ BREIF:
     templates as a contributor.
 
 */
+// For Windows: handle byte conflict between Windows headers and std::byte
+// Include Windows headers first if not already included, then undefine byte
+#ifdef _WIN32
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #ifndef _WINDOWS_
+        #include <windows.h>
+    #endif
+    // Undefine byte to avoid conflict with std::byte
+    #ifdef byte
+        #undef byte
+    #endif
+#endif
+
 #include <cstddef>
 #include <map>
 #include <ostream>
 #include <iostream>
-
-
-#pragma once
 using namespace std;
 
 /**

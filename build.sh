@@ -68,13 +68,14 @@ build_macos_universal() {
 }
 
 build_linux() {
-    print_status "Building Linux (using Docker)..."
+    print_status "Building Linux (using Docker for x86_64)..."
     if ! command -v docker &> /dev/null; then
         print_error "Docker is not installed. Install from https://www.docker.com/products/docker-desktop"
         return 1
     fi
     rm -rf build-linux
-    docker run --rm -v "$SCRIPT_DIR:/workspace" -w /workspace \
+    # Use --platform linux/amd64 to force x86_64 architecture (most common Linux architecture)
+    docker run --rm --platform linux/amd64 -v "$SCRIPT_DIR:/workspace" -w /workspace \
         gcc:latest bash -c "
         apt-get update -qq && \
         apt-get install -y -qq cmake && \
@@ -96,10 +97,7 @@ build_windows() {
     rm -rf build-windows
     cmake -B build-windows \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_SYSTEM_NAME=Windows \
-        -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
-        -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
-        -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres
+        -DCMAKE_TOOLCHAIN_FILE=toolchains/x86.cmake
     cmake --build build-windows --config Release
     if [ -f "build-windows/br.exe" ]; then
         print_success "Windows: build-windows/br.exe"

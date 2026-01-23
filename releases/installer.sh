@@ -9,7 +9,7 @@ else
 fi
 
 echo "Downloading $FILE..."
-curl -L -o $FILE "https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/download/v1.0.1/$FILE"
+curl -L -o $FILE "https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/download/v1.1.3/$FILE"
 
 echo "Extracting br..."
 unzip -j $FILE '*/br' -d .

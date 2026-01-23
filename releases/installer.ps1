@@ -2,7 +2,7 @@
 $zip = "build-windows.zip"
 
 Write-Host "Downloading $zip..."
-Invoke-WebRequest -Uri "https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/download/v1.0.1/$zip" -OutFile $zip
+Invoke-WebRequest -Uri "https://github.com/Eliaslopes248/Boilr-CLI-TOOL/releases/download/v1.1.3/$zip" -OutFile $zip
 
 $temp = "temp_dir"
 Write-Host "Extracting br.exe..."

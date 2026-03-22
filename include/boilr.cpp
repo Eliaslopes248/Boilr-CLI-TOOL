@@ -24,8 +24,8 @@
 #include <memory>
 #include <set>
 
+
 #define BR boilr
-namespace fs =  std::filesystem;
 
 // Cross-platform color support
 namespace {
@@ -242,7 +242,7 @@ int BR::verify_template_name(map<unsigned int, build>& builds, const string name
 }
 bool BR::verify_destination(const string name)
 {
-    if (fs::exists(name)){
+    if (std::filesystem::exists(name)){
         cout << "[PROC]Verifying Destination... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
         return true;
     }
@@ -264,16 +264,16 @@ bool BR::insert(build* b)
         return false;
     }
     // unzip ZIP file
-    fs::path dest_dir = fs::path(config.project_destination);
-    fs::path zip_path = dest_dir / (config.project_name + ".zip");
+    std::filesystem::path dest_dir = std::filesystem::path(config.project_destination);
+    std::filesystem::path zip_path = dest_dir / (config.project_name + ".zip");
     
     // Get list of directories before extraction to find what was extracted
-    std::set<fs::path> dirs_before;
-    if (fs::exists(dest_dir) && fs::is_directory(dest_dir))
+    std::set<std::filesystem::path> dirs_before;
+    if (std::filesystem::exists(dest_dir) && std::filesystem::is_directory(dest_dir))
     {
-        for (const auto& entry : fs::directory_iterator(dest_dir))
+        for (const auto& entry : std::filesystem::directory_iterator(dest_dir))
         {
-            if (fs::is_directory(entry.path()))
+            if (std::filesystem::is_directory(entry.path()))
             {
                 dirs_before.insert(entry.path());
             }
@@ -288,10 +288,10 @@ bool BR::insert(build* b)
     cout << "[PROC]Extracting Template... " << COLOR_GREEN << "OK" << COLOR_RESET << "\n";
     
     // Find the newly extracted folder and rename it to project name
-    fs::path extracted_folder;
-    for (const auto& entry : fs::directory_iterator(dest_dir))
+    std::filesystem::path extracted_folder;
+    for (const auto& entry : std::filesystem::directory_iterator(dest_dir))
     {
-        if (fs::is_directory(entry.path()) && dirs_before.find(entry.path()) == dirs_before.end())
+        if (std::filesystem::is_directory(entry.path()) && dirs_before.find(entry.path()) == dirs_before.end())
         {
             extracted_folder = entry.path();
             break;
@@ -301,12 +301,12 @@ bool BR::insert(build* b)
     // Rename extracted folder to project name
     if (!extracted_folder.empty())
     {
-        fs::path project_folder = dest_dir / config.project_name;
-        if (fs::exists(project_folder))
+        std::filesystem::path project_folder = dest_dir / config.project_name;
+        if (std::filesystem::exists(project_folder))
         {
-            fs::remove_all(project_folder);
+            std::filesystem::remove_all(project_folder);
         }
-        fs::rename(extracted_folder, project_folder);
+        std::filesystem::rename(extracted_folder, project_folder);
     }
     
     if (!clean_up(zip_path))
@@ -323,13 +323,13 @@ bool BR::write_zip(build* b)
 {
     const USER_CONFIG config = this->user_config;
     // Explicit destination directory
-    fs::path dest_dir = fs::path(config.project_destination);
+    std::filesystem::path dest_dir = std::filesystem::path(config.project_destination);
 
     // Explicit zip file path
-    fs::path zip_path = dest_dir / (config.project_name + ".zip");
+    std::filesystem::path zip_path = dest_dir / (config.project_name + ".zip");
 
     // Ensure destination directory exists
-    fs::create_directories(config.project_destination);
+    std::filesystem::create_directories(config.project_destination);
 
     // Write ZIP file
     std::ofstream out(zip_path, std::ios::binary);
@@ -346,9 +346,9 @@ bool BR::write_zip(build* b)
     return true;
 }
 
-bool BR::unzip(const fs::path& zip_file, const fs::path& dest_dir) 
+bool BR::unzip(const std::filesystem::path& zip_file, const std::filesystem::path& dest_dir) 
 {
-    fs::create_directories(dest_dir);
+    std::filesystem::create_directories(dest_dir);
 
     #ifdef _WIN32
         // Windows 10+ has tar built-in, use it for cross-compatibility
@@ -368,15 +368,15 @@ bool BR::unzip(const fs::path& zip_file, const fs::path& dest_dir)
     return true;
 }
 
-bool BR::clean_up(const fs::path& zip_file)
+bool BR::clean_up(const std::filesystem::path& zip_file)
 {
     // Use filesystem library for cross-platform file deletion
     try {
-        if (fs::exists(zip_file)) {
-            fs::remove(zip_file);
+        if (std::filesystem::exists(zip_file)) {
+            std::filesystem::remove(zip_file);
             return true;
         }
-    } catch (const fs::filesystem_error& e) {
+    } catch (const std::filesystem::filesystem_error& e) {
         // Fallback to system command if filesystem library fails
         #ifdef _WIN32
             std::string cmd = "del /f /q \"" + zip_file.string() + "\"";

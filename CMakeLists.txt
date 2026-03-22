@@ -28,6 +28,7 @@ add_subdirectory(include/http-client)
 # INCLUDE LIBRARIES
 target_link_libraries(${PROJECT_NAME} PUBLIC CLI_TOOL)
 target_link_libraries(${PROJECT_NAME} PUBLIC HTTP_CLIENT)
+target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
 
 # Platform-specific settings
 if(WIN32)

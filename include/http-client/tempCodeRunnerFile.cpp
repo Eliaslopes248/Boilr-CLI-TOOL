@@ -1,1 +1,0 @@
-curl_easy_cleanup

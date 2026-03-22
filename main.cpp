@@ -29,14 +29,10 @@ MAIN: program entry point
 ------------------------------------------------------------------
 */
 int main(int argc, char* argv[]) { 
-    // testing http class
-    http api;
-    api.send_get(
-        "https://boilr-serverless-function-final.vercel.app",
-        true
-    );
-    return handle_commands(argc, argv); 
+    
+    // testing logger class
 
+    return handle_commands(argc, argv); 
 }
 
 /**
@@ -52,6 +48,13 @@ int handle_commands(
     USER_CONFIG user_config;
     // boilr command line tool
     boilr br;
+
+    // no command line args were passed
+    if (argc == 1){
+        cout << "[WARNING] No command line args given... " << "\033[33mTry Again Next Time\033[0m\n";
+        exit(0);
+    }
+
     // parse command line args
     for(int i=0;i<argc;i++)
     {

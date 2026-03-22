@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <map>
 #include <string>
 #include <curl/curl.h>
 
@@ -13,8 +14,12 @@
 
 // representaion of http body
 struct http_body{
-    std::string json;
-};
+    std::map<std::string, std::string> fieldMap;
+    std::string json="";
+    void stringify();
+};  
+
+
 
 // struct used for curl call back
 struct memory{
@@ -26,8 +31,8 @@ class http
 {
 
 public:
-CURL*       curl;  // CURL session
-std::string base_url; // API base url
+CURL*       curl;       // CURL session
+std::string base_url;   // API base url
 
 // init
 http();

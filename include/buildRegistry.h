@@ -69,7 +69,11 @@ map<unsigned int, build> registery;
 // Register a build with direct pointers to the byte data
 // data_ptr: pointer to the unsigned char array from the header file
 // data_size: size_t value from the header file
-void register_build(string name, unsigned char* data_ptr, size_t data_size, string path)
+void register_build(
+    string name, 
+    unsigned char* data_ptr, 
+    size_t data_size, 
+    string path)
 {
     // catch invalid input
     if (name.size() == 0 || path.size() == 0){
@@ -124,8 +128,8 @@ private:
 // Can be used in header files - uses static initialization pattern
 // Creates a unique static variable that registers the build when initialized
 // 
-// Usage: REGISTER_BUILD("build-name", base_name, "path/to/file.h")
-// Example: REGISTER_BUILD("test-build", test_build_1, "templates/test_build_1.h")
+// Usage: REGISTER_BUILD("build-name", base_name, "path/to/file.h");
+// Example: REGISTER_BUILD("test-build", test_build_1, "templates/test_build_1.h");
 //          This will use test_build_1_zip[] and test_build_1_len from the header file
 
 #define REGISTER_BUILD(name, base_name, path) \

@@ -1,6 +1,7 @@
 # DONT COPY YOUR BUILD BECAUSE THIS DIRECTORY IS DEVICE SPECIFIC
 # Ignore all build-* directories (but keep zip files)
 build-*/
+build/
 
 # DONT PUSH ANY .zip FILES TO GITHUB TO KEEP CLEAN REPO
 /templates/*.h

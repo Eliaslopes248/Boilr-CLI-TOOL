@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug br",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/br",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Build (Debug)"
+        },
+        {
+            "name": "Debug br (no build)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/br",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "MIMode": "lldb"
+        }
+    ]
+}

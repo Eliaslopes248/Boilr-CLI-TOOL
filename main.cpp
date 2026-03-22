@@ -17,6 +17,7 @@
 #endif
 
 #include "include/boilr.h"
+#include "include/http-client/http.h"
 
 using namespace std;
 
@@ -27,14 +28,25 @@ int handle_commands(int argc, char* argv[]);
 MAIN: program entry point
 ------------------------------------------------------------------
 */
-int main(int argc, char* argv[]) { return handle_commands(argc, argv); }
+int main(int argc, char* argv[]) { 
+    // testing http class
+    http api;
+    api.send_get(
+        "https://boilr-serverless-function-final.vercel.app",
+        true
+    );
+    return handle_commands(argc, argv); 
+
+}
 
 /**
 ------------------------------------------------------------------
 HELPERS: main implementation
 ------------------------------------------------------------------
 **/
-int handle_commands(int argc, char* argv[])
+int handle_commands(
+    int argc, 
+    char* argv[])
 {
     // user config
     USER_CONFIG user_config;
@@ -117,7 +129,8 @@ int handle_commands(int argc, char* argv[])
     return result ? 0 : -1;
 }
 
-void config_to_string(USER_CONFIG config)
+void config_to_string(
+        USER_CONFIG config)
 {
     cout << "ID: " << config.id << endl;
     cout << "TEMPLATE NAME: " << config.template_name << endl;

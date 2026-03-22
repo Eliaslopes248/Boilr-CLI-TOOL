@@ -1,0 +1,48 @@
+features to add:
+
+
+
+
+======================================================================
+SHARED DRIVE SW DESIGN
+======================================================================
+- BUILDS .zip files live in a Cloudflare
+- registry.json file with meta data and build CDN url
+- BUILDS are fetched from Cloudflare and unziped into the destination specified
+
+
+DEPENDENCY INJECT DESIGN:
+
+[CLASS] httpServices
+    [AGGREGATES]
+        [CLASS] registryService (set using setter and injecting the service type *class*)
+            [DEPENDENCY] {cloudflareService, ...}
+
+        [CLASS] xxxService
+         ...
+
+SERVICE DESIGN:
+
+[INTERFACE] registryServiceInterface
+    [METHODS]
+        * std:string getRegistryJSON();
+        
+
+
+======================================================================
+OTHER FEATURES
+======================================================================
+Preview Mode:
+br -N test-build --dry-run
+
+Selective Extraction
+Instead of extracting full ZIP:
+    cli install test-build --only=src/
+    cli install test-build --exclude=docs/
+
+allow version in registry
+REGISTER_BUILD("test-build", test_build_1, "1.2.0", "../templates/test_build_1.h");
+
+
+
+

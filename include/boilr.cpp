@@ -56,6 +56,9 @@ BR::boilr()
     // Builds are automatically registered via registerBuilds.h include above
     this->registry = build_registery::Instance();
     // user_config is automatically initialized with default values from USER_CONFIG struct
+
+    /** FIXME: set the service type for the http_service field */
+
 }
 BR::boilr(USER_CONFIG& config)
 {
@@ -159,9 +162,12 @@ bool BR::verify_config(){
         cout << "[ERROR] No -ID and -N provided, you must specify at least one" << endl;
         return false;
     }
+
+    /** FIXME: get the registryJSON meta data to verify the config set */
+
     // fetch the builds form registry
     map<unsigned int, build> builds = this->registry.getBuilds();
-    build* chosen_build = nullptr;
+    build* chosen_build             = nullptr;
 
     // check name
     // loop though map to find a build with matching name

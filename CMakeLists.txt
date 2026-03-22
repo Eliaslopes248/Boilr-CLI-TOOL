@@ -23,9 +23,11 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 # SUBDIRECTORIES
 add_subdirectory(include)
+add_subdirectory(include/http-client)
 
 # INCLUDE LIBRARIES
 target_link_libraries(${PROJECT_NAME} PUBLIC CLI_TOOL)
+target_link_libraries(${PROJECT_NAME} PUBLIC HTTP_CLIENT)
 
 # Platform-specific settings
 if(WIN32)

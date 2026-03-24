@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <map>
 
 // enum to represent the log levels by severity
 enum LOG_LEVEL {
@@ -21,14 +22,25 @@ enum LOG_LEVEL {
     NO_LOGS=5
 };
 
+// escape codes for color coding log messages
+static std::map<LOG_LEVEL, int> logColorMap = 
+{
+    {INFO,      32}, // GREEN
+    {DEBUG,     34}, // BLUE
+    {WARNING,   33}, // YELLOW
+    {ERROR,     31}, // RED
+    {FATAL,     35}  // MAGENTA 
+};
+
 class Logger
 {
 private:
+
 // file that logs will output to
 std::string logFilePath = "~/boilr/LOG/log.txt";
 
 // class name is used to identify what file it called the log
-std::string className = "NO CLASS_NAME";
+std::string className = "NO_CLASS_NAME";
 
 // min/max log level that will be outputted to the file
 LOG_LEVEL minFileLevel = LOG_LEVEL(0);
@@ -40,12 +52,22 @@ LOG_LEVEL maxStdoLevel = LOG_LEVEL(4);
 
 // flag to tell if we stdout logs to console
 bool debugModeFlag;
+bool fileModeFlag;
 
 // checks ENV var for BOILR_ENV_TYPE == debug | d | DEBUG
 bool inDebugMode();
 
 void handleFileLog(LOG_LEVEL   lvl, std::string message);
+
 void handleStdoLog(LOG_LEVEL   lvl, std::string message);
+
+std::string getFormattedLogLevel(LOG_LEVEL lvl);
+
+std::string getFormattedLog(LOG_LEVEL lvl, std::string message);
+
+void fileLog(std::string log);
+
+
 
 public:
 
@@ -76,5 +98,20 @@ void invoke(
     LOG_LEVEL   lvl,
     std::string message
 );
+
+// sets class name so it can be seen in the logs
+void setClassName(std::string name);
+
+// toggles the debug flag
+void setDebugFlag(bool enabled);
+
+// toggles the file mode flag
+void setFileModeFlag(bool enabled);
+
+// toggles both debug and file mode flags
+void setDebugFileFlags(bool dbg, bool fm);
+
+// deletes the pre-existing log file
+void deleteOldLogFile();
 
 };

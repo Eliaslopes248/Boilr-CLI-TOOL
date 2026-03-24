@@ -1,0 +1,16 @@
+# GET ALL SOURCE FILES
+file(GLOB ALL_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
+# CREATE LIBRARY
+add_library(
+    LOGGER
+    ${ALL_SOURCES}
+)
+# ADD INCLUDE LIB
+target_include_directories(
+    LOGGER
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

@@ -18,6 +18,7 @@
 
 #include "include/boilr.h"
 #include "include/http-client/http.h"
+#include "include/logger/logger.h"
 
 using namespace std;
 
@@ -29,8 +30,17 @@ MAIN: program entry point
 ------------------------------------------------------------------
 */
 int main(int argc, char* argv[]) { 
-    
     // testing logger class
+    Logger log;
+    log.setDebugFlag(true);
+    log.setFileModeFlag(true);
+    log.setClassName("HttpClient");
+    log.invoke(INFO, "printing out something");
+    log.invoke(DEBUG, "testing a variables name");
+    log.invoke(WARNING, "client is not connected, must reconnect");
+    log.invoke(FATAL, "the system has crashed now, exiting program");
+    log.invoke(FATAL, "the system has crashed now, exiting program");
+
 
     return handle_commands(argc, argv); 
 }
